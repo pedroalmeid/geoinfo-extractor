@@ -19,3 +19,4 @@ traduzidos de países em casos específicos
 as categorias e respectivos valores extraídos pelas funções de web scrap
 [] Realizar requisição de criação de país para a API REST para criar o país 
 automaticamente no banco de dados
+'''
