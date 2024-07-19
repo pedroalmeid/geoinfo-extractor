@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from deep_translator import GoogleTranslator
 
 
-def getCapitalPopulation(countryName):
+'''def getCapitalPopulation(countryName):
     url = 'https://en.wikipedia.org/wiki/List_of_national_capitals_by_population'
     page = requests.get(url).text
 
@@ -20,18 +20,42 @@ def getCapitalPopulation(countryName):
             population = int(population.replace(',', '')) if (',' in population) else int(population)
             return population
 
+    return 0'''
+
+
+def getCapitalPopulation(country_name):
+    translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
+    url = 'https://en.wikipedia.org/wiki/List_of_national_capitals_by_population'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    for row in soup.select('table.wikitable tbody tr'):
+        columns = row.find_all('td')
+
+        if len(columns) < 3:
+            continue
+        
+        country_column = columns[0]
+
+        country = country_column.find('a').text.replace("*", '').strip()
+        if country == country_name or country == translated_country_name:
+            population = columns[2].get_text().replace(',', '')
+            return int(population)
+
     return 0
 
 countries = [
-    'Equatorial Guinea',
-    'Guinea',
-    'Guinea Bissau',
-    'Papua New Guinea',
+    'China', 
+    'Iran',
+    "Côte D'Ivoire"
 ]
 
 for country in countries:
-    print(getCapitalPopulation(country))
-
+    print(f"{country}: {getCapitalPopulation(country)}")
 
 '''
 [] Criar uma lista com todos os países
