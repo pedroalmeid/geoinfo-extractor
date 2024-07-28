@@ -1,11 +1,19 @@
+import re
 import country_converter as coco
 import requests
-import re
 from bs4 import BeautifulSoup
 from deep_translator import GoogleTranslator
 
-def getCapitalPopulation(country_name):
+cc = coco.CountryConverter()
+
+def getId(country_name):
     translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
+    country_id = cc.convert(translated_country_name, to='ISO3')
+    return country_id
+
+def getCapitalPopulation(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
     url = 'https://en.wikipedia.org/wiki/List_of_national_capitals_by_population'
     try:
         page = requests.get(url)
@@ -19,7 +27,7 @@ def getCapitalPopulation(country_name):
 
         if len(columns) < 3:
             continue
-        
+
         country_column = columns[0]
 
         country = country_column.find('a').text.replace("*", '').strip()
@@ -30,7 +38,8 @@ def getCapitalPopulation(country_name):
     return 0
 
 def getUrbanizationRate(country_name):
-    translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
     url = 'https://en.wikipedia.org/wiki/Urbanization_by_sovereign_state'
     try:
         page = requests.get(url)
@@ -44,10 +53,11 @@ def getUrbanizationRate(country_name):
 
         if len(columns) < 4:
             continue
-        
+
         country_column = columns[0]
 
-        country = country_column.find('a').text if country_column.find('a') else False
+        country = country_column.find(
+            'a').text if country_column.find('a') else False
         if country == country_name or country == translated_country_name:
             urbanization_rate = columns[3].get_text()
             return float(urbanization_rate)
@@ -55,7 +65,8 @@ def getUrbanizationRate(country_name):
     return 0
 
 def getElectricityProd(country_name):
-    translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
     url = 'https://en.wikipedia.org/wiki/List_of_countries_by_electricity_production'
     try:
         page = requests.get(url)
@@ -69,7 +80,7 @@ def getElectricityProd(country_name):
 
         if len(columns) < 2:
             continue
-        
+
         country_column = columns[0]
 
         if country_column.find('a'):
@@ -94,7 +105,7 @@ def getGoldProd(country_name):
 
         if len(columns) < 3:
             continue
-        
+
         country_column = columns[1]
 
         if country_column.find('a'):
@@ -106,11 +117,12 @@ def getGoldProd(country_name):
     return 0
 
 def getHighestGeographicalPoint(country_name):
-    portuguese_country_name = GoogleTranslator(source='auto', target='pt').translate(text=country_name)
+    portuguese_country_name = GoogleTranslator(
+        source='auto', target='pt').translate(text=country_name)
     url = 'https://pt.wikipedia.org/wiki/Lista_de_pa%C3%ADses_por_ponto_mais_alto'
     try:
         page = requests.get(url)
-    except: 
+    except:
         return 0
 
     soup = BeautifulSoup(page.text, 'html.parser')
@@ -120,23 +132,24 @@ def getHighestGeographicalPoint(country_name):
 
         if len(columns) < 4:
             continue
-        
+
         country_column = columns[1]
 
         if country_column.find('a'):
             for country in country_column.find_all('a'):
                 if country.text == portuguese_country_name:
-                    string = columns[3].get_text().replace(',','.')
+                    string = columns[3].get_text().replace(',', '.')
                     re_search = r'[\d]+[.,\d]+|[\d]*[.][\d]+|[\d]+'
                     numbers_in_string = re.findall(re_search, string)
                     points = [float(number) for number in numbers_in_string]
                     highest_point = max(points)
                     return highest_point
-      
+
     return 0
 
 def getImmigrantPercentage(country_name):
-    translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
     url = 'https://en.wikipedia.org/wiki/List_of_sovereign_states_by_immigrant_and_emigrant_population'
     try:
         page = requests.get(url)
@@ -150,7 +163,7 @@ def getImmigrantPercentage(country_name):
 
         if len(columns) < 3:
             continue
-        
+
         country_column = columns[0]
 
         if country_column.find('a'):
@@ -162,7 +175,8 @@ def getImmigrantPercentage(country_name):
     return 0
 
 def getIntentionalHomicideRate(country_name):
-    translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
     url = 'https://en.wikipedia.org/wiki/List_of_countries_by_intentional_homicide_rate'
     try:
         page = requests.get(url)
@@ -178,7 +192,7 @@ def getIntentionalHomicideRate(country_name):
 
         if len(columns) < 2:
             continue
-        
+
         country_column = columns[0]
         country = country_column.find('a').text.replace("*", '').strip()
         if country == country_name or country == translated_country_name:
@@ -187,23 +201,132 @@ def getIntentionalHomicideRate(country_name):
 
     return 0
 
+def getLiteracyRate(country_name):
+    portuguese_country_name = GoogleTranslator(
+        source='auto', target='pt').translate(text=country_name)
+    url = 'https://pt.wikipedia.org/wiki/Lista_de_pa%C3%ADses_por_%C3%ADndice_de_alfabetiza%C3%A7%C3%A3o'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    for row in soup.select('table.sortable.wikitable tbody tr'):
+        columns = row.find_all('td')
+
+        if len(columns) < 2:
+            continue
+
+        country_column = columns[0]
+
+        if country_column.find('a'):
+            country = country_column.find('a').text
+            if country == portuguese_country_name:
+                literacy_rate = columns[1].get_text()
+                if literacy_rate == 'N/A':
+                    return 0
+                else:
+                    return float(literacy_rate.replace(',', '.').replace('%', ''))
+
+    return 0
+
+def getNeighbours(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
+    url = 'https://en.wikipedia.org/wiki/List_of_countries_and_territories_by_number_of_land_borders'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    for row in soup.select('table.wikitable tbody tr'):
+        columns = row.find_all('td')
+
+        if len(columns) < 5:    
+            continue    
+
+        country_column = columns[0]
+        
+        if country_column.find('a'):
+            country = country_column.find('a').text
+            if country == country_name or country == translated_country_name:
+                neighbours = columns[4].get_text()
+                return int(neighbours)
+
+    return 0
+
+def getPetroleumReserves(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
+    url = 'https://en.wikipedia.org/wiki/List_of_countries_by_proven_oil_reserves'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    proven_reserves_table = soup.find_all('table')[1]
+
+    for row in proven_reserves_table.select('tbody tr'):
+        columns = row.find_all('td')
+
+        if len(columns) < 1:
+            continue
+
+        country_column = row.find('th')
+        country = country_column.find('a').text.replace("*", '').strip()
+
+        if country == country_name or country == translated_country_name:
+            petroleum_reserve = columns[0].get_text().replace(',','').replace('.00','')
+            return float(petroleum_reserve)
+
+    return 0
+
+def getCoastalDistance(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
+    url = 'https://www.cia.gov/the-world-factbook/field/coastline/'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    countries = soup.select('.pb30')
+
+    for country in countries:
+        if (country.h3 and (country.h3.a.text == country_name or country.h3.a.text == translated_country_name)):
+            coastal_distance = country.text.replace(translated_country_name, '').replace('km', '').replace(',','').strip()
+            return float(coastal_distance)
+
+    return 0
+
 countries = [
-    'China', 
-    'Iran',
+    'China',
+    'Venezuela',
+    'África do Sul',
+    'Morocco',
     "Côte D'Ivoire",
-    'United States',
-    'Germany',
-    'Iraque'
 ]
 
 for country in countries:
-    print(f'''{country}: capital: {getCapitalPopulation(country)},
-    urbanization_rate: {getUrbanizationRate(country)},
-    electricity_prod: {getElectricityProd(country)},
-    gold_prod: {getGoldProd(country)},
-    highest_geographical_point: {getHighestGeographicalPoint(country)},
-    immigrant_percentage: {getImmigrantPercentage(country)},
-    intentional_homicidade_rate: {getIntentionalHomicideRate(country)},
+    print(f'''{country}: OK capital: {getCapitalPopulation(country)},
+    OK id: {getId(country)},
+    OK urbanization_rate: {getUrbanizationRate(country)},
+    OK electricity_prod: {getElectricityProd(country)},
+    OK gold_prod: {getGoldProd(country)},
+    OK highest_geographical_point: {getHighestGeographicalPoint(country)},
+    OK immigrant_percentage: {getImmigrantPercentage(country)},
+    OK intentional_homicide_rate: {getIntentionalHomicideRate(country)},
+    OK literacy_rate: {getLiteracyRate(country)},
+    OK neighbours: {getNeighbours(country)},
+    OK petroleum_reserves: {getPetroleumReserves(country)},
+    OK coastal_distance: {getCoastalDistance(country)}
     ''')
 
 '''
