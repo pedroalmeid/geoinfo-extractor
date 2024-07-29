@@ -1,16 +1,9 @@
 import re
-import country_converter as coco
 import requests
 from bs4 import BeautifulSoup
 from deep_translator import GoogleTranslator
 
-cc = coco.CountryConverter()
-
-def getId(country_name):
-    translated_country_name = GoogleTranslator(source='auto', target='english').translate(text=country_name)
-    country_id = cc.convert(translated_country_name, to='ISO3')
-    return country_id
-
+# Wikipedia web scrap functions
 def getCapitalPopulation(country_name):
     translated_country_name = GoogleTranslator(
         source='auto', target='english').translate(text=country_name)
@@ -286,6 +279,7 @@ def getPetroleumReserves(country_name):
 
     return 0
 
+# CIA web scrap functions
 def getCoastalDistance(country_name):
     translated_country_name = GoogleTranslator(
         source='auto', target='english').translate(text=country_name)
@@ -306,38 +300,27 @@ def getCoastalDistance(country_name):
 
     return 0
 
-countries = [
-    'China',
-    'Venezuela',
-    'África do Sul',
-    'Morocco',
-    "Côte D'Ivoire",
-]
+def getTotalArea(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
+    url = 'https://www.cia.gov/the-world-factbook/field/area/'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
 
-for country in countries:
-    print(f'''{country}: OK capital: {getCapitalPopulation(country)},
-    OK id: {getId(country)},
-    OK urbanization_rate: {getUrbanizationRate(country)},
-    OK electricity_prod: {getElectricityProd(country)},
-    OK gold_prod: {getGoldProd(country)},
-    OK highest_geographical_point: {getHighestGeographicalPoint(country)},
-    OK immigrant_percentage: {getImmigrantPercentage(country)},
-    OK intentional_homicide_rate: {getIntentionalHomicideRate(country)},
-    OK literacy_rate: {getLiteracyRate(country)},
-    OK neighbours: {getNeighbours(country)},
-    OK petroleum_reserves: {getPetroleumReserves(country)},
-    OK coastal_distance: {getCoastalDistance(country)}
-    ''')
+    soup = BeautifulSoup(page.text, 'html.parser')
 
-'''
-[] Criar uma lista com todos os países
-[] Criar todas as funções de web scrap (para cada categoria)
-[] Configurar as funções de web scrap para preencher a categoria
-com valor 0 caso haja falha na obtenção da informação
-[] Configurar as funções de web scrap para lidar com nomes 
-traduzidos de países em casos específicos
-[] Para cada item da lista (cada país) montar o dicionário com todas
-as categorias e respectivos valores extraídos pelas funções de web scrap
-[] Realizar requisição de criação de país para a API REST para criar o país 
-automaticamente no banco de dados
-'''
+    countries = soup.select('.pb30')
+
+    for country in countries:
+        if (country.h3 and (country.h3.a.text == country_name or country.h3.a.text == translated_country_name)):
+            raw_areas_info = country.text
+            start_pos = raw_areas_info.find(':') + 1
+            final_pos = raw_areas_info.find('s')
+            total_area = raw_areas_info[start_pos:final_pos].replace(',','').strip()
+            try:
+                return int(total_area)
+            except:
+                return 0
+    return 0
