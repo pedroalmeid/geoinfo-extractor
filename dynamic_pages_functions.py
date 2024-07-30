@@ -28,12 +28,9 @@ def getPageFromDynamicWebsite(url):
 
     return page_source
 
-def getFemalePopulation(country_name):
+def getWorldBankData(country_name, url, bigNumbers):
     translated_country_name = GoogleTranslator(
         source='auto', target='english').translate(text=country_name)
-
-    url = 'https://data.worldbank.org/indicator/SP.POP.TOTL.FE.IN'
-
     try:
         page = getPageFromDynamicWebsite(url)
     except:
@@ -46,7 +43,38 @@ def getFemalePopulation(country_name):
 
         country = columns[0].text
         if (country == country_name or country == translated_country_name):
-            population = columns[2].text.replace(',','').strip()
-            return float(population)
+            if bigNumbers:
+                data = columns[2].text.replace(',','').strip()
+            else:
+                data = columns[2].text
+            
+            return float(data)
     
     return 0
+
+def getFemalePopulation(country_name):
+    return getWorldBankData(
+        country_name=country_name,
+        url='https://data.worldbank.org/indicator/SP.POP.TOTL.FE.IN',
+        bigNumbers=True
+    )
+def getMalePopulation(country_name):
+    return getWorldBankData(
+        country_name=country_name,
+        url='https://data.worldbank.org/indicator/SP.POP.TOTL.MA.IN',
+        bigNumbers=True
+    )
+def getForestArea(country_name):
+    return getWorldBankData(
+        country_name=country_name,
+        url='https://data.worldbank.org/indicator/AG.LND.FRST.ZS',
+        bigNumbers=False
+    )
+def getGDP(country_name):
+    return getWorldBankData(
+        country_name=country_name,
+        url='https://data.worldbank.org/indicator/NY.GDP.MKTP.CD',
+        bigNumbers=True
+    )
+
+

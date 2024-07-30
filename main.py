@@ -3,11 +3,8 @@ import dynamic_pages_functions
 import direct_functions
 
 countries = [
-    'China',
-    'Venezuela',
-    'África do Sul',
-    'Morocco',
-    "Côte D'Ivoire",
+    'Brasil',
+    'Emirados Árabes Unidos'
 ]
 
 for country in countries:
@@ -24,7 +21,10 @@ for country in countries:
     OK petroleum_reserves: {static_pages_functions.getPetroleumReserves(country)},
     OK coastal_distance: {static_pages_functions.getCoastalDistance(country)}
     OK total_area: {static_pages_functions.getTotalArea(country)},
-    female_population: {dynamic_pages_functions.getFemalePopulation(country)}
+    OK female_population: {dynamic_pages_functions.getFemalePopulation(country)}
+    OK male_population: {dynamic_pages_functions.getMalePopulation(country)},
+    OK forest_area: {dynamic_pages_functions.getForestArea(country)},
+    OK gdp: {dynamic_pages_functions.getGDP(country)}
     ''')
 
 '''
