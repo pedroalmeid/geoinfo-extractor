@@ -294,9 +294,15 @@ def getCoastalDistance(country_name):
     countries = soup.select('.pb30')
 
     for country in countries:
-        if (country.h3 and (country.h3.a.text == country_name or country.h3.a.text == translated_country_name)):
-            coastal_distance = country.text.replace(translated_country_name, '').replace('km', '').replace(',','').strip()
-            return float(coastal_distance)
+        if country.h3:
+            try:
+                if country.h3.a.text == country_name:
+                    coastal_distance = country.text.replace(country_name, '').replace('km', '').replace(',','').strip()
+                elif country.h3.a.text == translated_country_name:
+                    coastal_distance = country.text.replace(translated_country_name, '').replace('km', '').replace(',','').strip()
+                return float(coastal_distance)
+            except:
+                return 0
 
     return 0
 

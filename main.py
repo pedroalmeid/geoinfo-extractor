@@ -3,8 +3,10 @@ import dynamic_pages_functions
 import direct_functions
 
 countries = [
-    'Brasil',
-    'Emirados Árabes Unidos'
+    'Brazil',
+    "Korea, Dem. People's Rep.",
+    "Cote d'Ivoire",
+    "Turkiye"
 ]
 
 for country in countries:
@@ -24,7 +26,13 @@ for country in countries:
     OK female_population: {dynamic_pages_functions.getFemalePopulation(country)}
     OK male_population: {dynamic_pages_functions.getMalePopulation(country)},
     OK forest_area: {dynamic_pages_functions.getForestArea(country)},
-    OK gdp: {dynamic_pages_functions.getGDP(country)}
+    OK gdp: {dynamic_pages_functions.getGdp(country)},
+    OK gdp_per_capita: {dynamic_pages_functions.getGdpPerCapita(country)},
+    OK gini: {dynamic_pages_functions.getGini(country)},
+    OK life_expectancy: {dynamic_pages_functions.getLifeExpectancy(country)},
+    OK rural_population: {dynamic_pages_functions.getRuralPopulation(country)},
+    OK total_population: {dynamic_pages_functions.getTotalPopulation(country)}
+    OK population_growth_rate: {dynamic_pages_functions.getPopulationGrowthRate(country)}
     ''')
 
 '''
