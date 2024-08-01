@@ -305,7 +305,13 @@ def getHdi(country_name):
             if len(columns) > 2:
                 hdi = columns[2].get_text()
             elif len(columns) == 2:
-                upper_sibling_columns = row.find_previous_sibling('tr').find_all('td')
+                upper_sibling = row.find_previous_sibling('tr')
+                upper_sibling_columns = upper_sibling.find_all('td')
+
+                while (len(upper_sibling_columns) <= 2):
+                    upper_sibling = upper_sibling.find_previous_sibling('tr')
+                    upper_sibling_columns = upper_sibling.find_all('td')
+                
                 hdi = upper_sibling_columns[2].get_text()
             return float(hdi)
 
