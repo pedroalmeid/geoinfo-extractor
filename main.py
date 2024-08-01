@@ -6,7 +6,8 @@ countries = [
     'Brazil',
     "Korea, Dem. People's Rep.",
     "Cote d'Ivoire",
-    "Turkiye"
+    "Turkiye",
+    "United States"
 ]
 
 for country in countries:
@@ -33,6 +34,9 @@ for country in countries:
     OK rural_population: {dynamic_pages_functions.getRuralPopulation(country)},
     OK total_population: {dynamic_pages_functions.getTotalPopulation(country)}
     OK population_growth_rate: {dynamic_pages_functions.getPopulationGrowthRate(country)}
+    OK ttdi_rank: {direct_functions.getTtdiRank(country)}
+    lat: {static_pages_functions.getLatAndLong(country)[0]},
+    long: {static_pages_functions.getLatAndLong(country)[1]}
     ''')
 
 '''

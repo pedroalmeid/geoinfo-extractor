@@ -330,3 +330,29 @@ def getTotalArea(country_name):
             except:
                 return 0
     return 0
+
+def getLatAndLong(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
+    url = 'https://developers.google.com/public-data/docs/canonical/countries_csv'
+    try:
+        page = requests.get(url)
+    except:
+        return [0,0]
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    for row in soup.select('tr'):
+        columns = row.find_all('td')
+
+        if len(columns) < 4:    
+            continue    
+
+        country = columns[3].text
+        
+        if country == country_name or country == translated_country_name:
+            latitude = float(columns[1].text)
+            longitude = float(columns[2].text)
+            return [latitude, longitude]
+
+    return [0,0]
