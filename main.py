@@ -1,13 +1,11 @@
-import static_pages_functions 
-import dynamic_pages_functions
 import direct_functions
+import dynamic_pages_functions
+import static_pages_functions
 
 countries = [
-    'Brazil',
-    "Korea, Dem. People's Rep.",
-    "Cote d'Ivoire",
-    "Turkiye",
-    "United States"
+    'Equador',
+    'Liberia',
+    'Sierra Leone'
 ]
 
 for country in countries:
@@ -35,8 +33,9 @@ for country in countries:
     OK total_population: {dynamic_pages_functions.getTotalPopulation(country)}
     OK population_growth_rate: {dynamic_pages_functions.getPopulationGrowthRate(country)}
     OK ttdi_rank: {direct_functions.getTtdiRank(country)}
-    lat: {static_pages_functions.getLatAndLong(country)[0]},
-    long: {static_pages_functions.getLatAndLong(country)[1]}
+    OK lat: {static_pages_functions.getLatAndLong(country)[0]},
+    OK long: {static_pages_functions.getLatAndLong(country)[1]},
+    OK hdi: {static_pages_functions.getHdi(country)},
     ''')
 
 '''

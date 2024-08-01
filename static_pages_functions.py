@@ -279,6 +279,38 @@ def getPetroleumReserves(country_name):
 
     return 0
 
+def getHdi(country_name):
+    translated_country_name = GoogleTranslator(
+        source='auto', target='english').translate(text=country_name)
+    url = 'https://en.wikipedia.org/wiki/List_of_countries_by_Human_Development_Index'
+    try:
+        page = requests.get(url)
+    except:
+        return 0
+
+    soup = BeautifulSoup(page.text, 'html.parser')
+
+    hdi_table = soup.find_all('table')[1]
+
+    for row in hdi_table.select('tbody tr'):
+        columns = row.find_all('td')
+
+        if len(columns) < 2:
+            continue
+
+        country_column = row.find('th')
+        country = country_column.find('a').text
+
+        if country == country_name or country == translated_country_name:
+            if len(columns) > 2:
+                hdi = columns[2].get_text()
+            elif len(columns) == 2:
+                upper_sibling_columns = row.find_previous_sibling('tr').find_all('td')
+                hdi = upper_sibling_columns[2].get_text()
+            return float(hdi)
+
+    return 0
+
 # CIA web scrap functions
 def getCoastalDistance(country_name):
     translated_country_name = GoogleTranslator(
@@ -356,3 +388,4 @@ def getLatAndLong(country_name):
             return [latitude, longitude]
 
     return [0,0]
+
