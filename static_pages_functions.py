@@ -250,7 +250,10 @@ def getNeighbours(country_name):
             country = country_column.find('a').text
             if country == country_name or country == translated_country_name:
                 neighbours = columns[4].get_text()
-                return int(neighbours)
+                try:
+                    return int(neighbours)
+                except:
+                    return 0
 
     return 0
 
