@@ -53,7 +53,10 @@ def getUrbanizationRate(country_name):
             'a').text if country_column.find('a') else False
         if country == country_name or country == translated_country_name:
             urbanization_rate = columns[3].get_text()
-            return float(urbanization_rate)
+            try:
+                return float(urbanization_rate)
+            except:
+                return 0
 
     return 0
 
@@ -336,12 +339,12 @@ def getCoastalDistance(country_name):
             try:
                 if country.h3.a.text == country_name:
                     coastal_distance = country.text.replace(country_name, '').replace('km', '').replace(',','').strip()
+                    return float(coastal_distance)
                 elif country.h3.a.text == translated_country_name:
                     coastal_distance = country.text.replace(translated_country_name, '').replace('km', '').replace(',','').strip()
-                return float(coastal_distance)
+                    return float(coastal_distance)
             except:
                 return 0
-
     return 0
 
 def getTotalArea(country_name):

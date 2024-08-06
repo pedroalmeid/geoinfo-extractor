@@ -2,12 +2,48 @@ import direct_functions
 import dynamic_pages_functions
 import static_pages_functions
 
-from pprint import pprint 
+from pprint import pprint
 import requests
 
 countries = [
-    'Finland'
+    "Laos",
+    "Latvia",
+    "Lebanon",
+    "Lesotho",
+    "Liberia",
+    "Libya",
+    "Liechtenstein",
+    "Lithuania",
+    "Luxembourg",
+    "Madagascar",
+    "Malawi",
+    "Malaysia",
+    "Maldives",
+    "Mali",
+    "Malta",
+    "Marshall Islands",
+    "Mauritania",
+    "Mauritius",
+    "Mexico",
+    "Micronesia",
+    "Monaco",
+    "Mongolia",
+    "Montenegro",
+    "Morocco",
+    "Mozambique",
+    "Myanmar",
+    "Namibia",
+    "Nauru",
+    "Nepal",
+    "Netherlands",
+    "New Zealand",
+    "Nicaragua",
+    "Niger",
+    "Nigeria",
+    "North Macedonia"
 ]
+
+
 
 for country in countries:
     country_dictionary = {
@@ -40,8 +76,8 @@ for country in countries:
         "total_population": dynamic_pages_functions.getTotalPopulation(country),
         "ttdi_rank": direct_functions.getTtdiRank(country),
         "urbanization_rate": static_pages_functions.getUrbanizationRate(country)
-        }
-    
+    }
+
     pprint(country_dictionary)
 
     api_url = "http://localhost:4100/countries"
@@ -49,18 +85,3 @@ for country in countries:
 
     if response.status_code == 201:
         print(f"{country} was created successfully on the database")
-    
-'''
-[] Criar uma lista com todos os países
-[X] Criar todas as funções de web scrap (para cada categoria)
-[X] Configurar as funções de web scrap para preencher a categoria
-com valor 0 caso haja falha na obtenção da informação
-[X] Configurar as funções de web scrap para lidar com nomes 
-traduzidos de países em casos específicos
-[X] Pensar em separar as funções de web scrap para sites estáticos e 
-dinâmicos em arquivos diferentes (um usa selenium e outro não)
-[X] Para cada item da lista (cada país) montar o dicionário com todas
-as categorias e respectivos valores extraídos pelas funções de web scrap
-[] Realizar requisição de criação de país para a API REST para criar o país 
-automaticamente no banco de dados
-'''

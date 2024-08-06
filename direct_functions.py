@@ -7,7 +7,11 @@ cc = coco.CountryConverter()
 def getId(country_name):
     translated_country_name = GoogleTranslator(
         source='auto', target='english').translate(text=country_name)
+
     country_id = cc.convert(translated_country_name, to='ISO3')
+    if cc.convert(translated_country_name, to='ISO3') == 'not found':
+        country_id = cc.convert(country_name, to='ISO3')
+        
     return country_id
 
 
